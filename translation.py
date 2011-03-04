@@ -5,24 +5,36 @@ translation.py
 
 Created by Pedro Alcocer on 2011-03-01.
 
-Simplest working algorithm
+Using combiners.
 """
-
 import dumbo
 from collections import defaultdict
 
 def mapper(key, value):
     for trans in value.split():
-        yield trans.split("::")
+        english, french = trans.split("::")
+        yield english, (french, 1)
 
 def reducer(key, values):
-    translation_counts = defaultdict(int)
-    for value in values:
-        translation_counts[value] += 1
+    sum = 0.0
+    counts = defaultdict(int)
+        
+    for word, count in values:
+        counts[word] += count
+        sum += count
     
-    total_translations = float(sum(translation_counts.values()))
-    for word in translation_counts:
-        yield (key, word, translation_counts[word]/total_translations)
+    for word in counts:
+        yield (key, word), counts[word]/sum
+
+def combiner(key, values):
+    counts = defaultdict(int)
+    
+    for word, count in values:
+        counts[word] += 1
+    
+    for word in counts:
+        yield key, (word, counts[word])
 
 if __name__ == '__main__':
-    dumbo.run(mapper, reducer)
+    dumbo.run(mapper, reducer, combiner=combiner)
+
