@@ -1,3 +1,13 @@
+#!/usr/bin/env python
+# encoding: utf-8
+"""
+translation.py
+
+Created by Pedro Alcocer on 2011-03-01.
+
+Simplest working algorithm
+"""
+
 import dumbo
 from collections import defaultdict
 
